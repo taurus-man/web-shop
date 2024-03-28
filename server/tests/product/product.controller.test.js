@@ -1,7 +1,6 @@
 const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../../controllers/productController');
 const Product = require('../../models/Product');
 
-// Mock the Product model
 jest.mock('../../models/Product');
 
 const products = [
@@ -38,7 +37,6 @@ describe('Product Controller', () => {
     });
 
     test('getAllProducts successfully retrieves products', async () => {
-        // const mockProducts = [{ id: 1, name: 'Product 1' }, { id: 2, name: 'Product 2' }];
         const mockProducts = products;
         Product.findAll.mockResolvedValue(mockProducts);
 
@@ -58,7 +56,6 @@ describe('Product Controller', () => {
 
     test('getProductById finds a product', async () => {
         const product_id = 1;
-        // const mockProduct = { id: product_id, name: 'Product 1' };
         const mockProduct = products[0];
         Product.findById.mockResolvedValue(mockProduct);
 
@@ -87,7 +84,6 @@ describe('Product Controller', () => {
     });
 
     test('createProduct successfully creates a product', async () => {
-        // const newProduct = { name: 'New Product', price: 20 };
         const newProduct = products[1];
         Product.create.mockResolvedValue(newProduct);
 
@@ -100,53 +96,28 @@ describe('Product Controller', () => {
     test('createProduct handles errors', async () => {
         Product.create.mockRejectedValue(new Error('Error creating product'));
 
-        // mockReq.body = { name: 'New Product', price: 20 };
         mockReq.body = products[1];
         await createProduct(mockReq, mockRes);
 
         expect(mockRes.status).toHaveBeenCalledWith(500);
     });
 
-    // test('updateProduct successfully updates a product', async () => {
-    //     const updatedProduct = { id: 1, name: 'Updated Product', price: 150 };
-    //     Product.updateById.mockResolvedValue(updatedProduct);
-    //     Product.findById.mockResolvedValue(updatedProduct);
-
-    //     mockReq.params = { id: 1 };
-    //     mockReq.body = updatedProduct;
-    //     await updateProduct(mockReq, mockRes);
-
-    //     expect(mockRes.json).toHaveBeenCalledWith(updatedProduct);
-    // });
     test('updateProduct successfully updates a product', async () => {
         const product_id = 1;
-        // const updatedProduct = {
-        //     id: product_id,
-        //     name: 'Updated Product',
-        //     price: 150,
-        //     description: 'Updated description',
-        //     image_url: 'http://example.com/updated_product.jpg'
-        // };
         const updatedProduct = products[0];
     
-        // Simulate the updateById method successfully updating the product.
-        Product.updateById.mockResolvedValue(true); // Assuming true indicates success.
+        Product.updateById.mockResolvedValue(true);
     
-        // Simulate findById returning the updated product.
         Product.findById.mockResolvedValue(updatedProduct);
     
-        // Set up the mock request with the product ID and the updated product data.
         mockReq.params = { id: product_id };
         mockReq.body = updatedProduct;
     
-        // Call the updateProduct controller function with the mock request and response.
         await updateProduct(mockReq, mockRes);
     
-        // Check that the response was called with the updated product.
         expect(mockRes.json).toHaveBeenCalledWith(updatedProduct);
     });
     
-
     test('updateProduct handles invalid input', async () => {
         mockReq.params = { id: 1 };
         mockReq.body = {}; // Missing required fields
@@ -155,29 +126,14 @@ describe('Product Controller', () => {
         expect(mockRes.status).toHaveBeenCalledWith(400);
     });
 
-    // test('updateProduct handles product not found', async () => {
-    //     Product.updateById.mockResolvedValue(null); // Simulate product not found
-
-    //     mockReq.params = { id: 999 };
-    //     mockReq.body = { name: "Updated Name", price: 100, description: "Updated Description" };
-    //     await updateProduct(mockReq, mockRes);
-
-    //     expect(mockRes.status).toHaveBeenCalledWith(404);
-    // });
-
     test('updateProduct handles product not found', async () => {
-        // Setup request and mock response objects
         mockReq.params = { id: 'nonexistent-id' };
-        // mockReq.body = { name: 'Updated Name', price: 100, description: 'Updated Description' };
         mockReq.body = products[0]
     
-        // Mock Product.updateById to simulate an error indicating the product was not found
         Product.updateById.mockRejectedValue({ kind: 'not_found' });
     
-        // Call the controller function
         await updateProduct(mockReq, mockRes);
     
-        // Check that the response status was set to 404 for product not found
         expect(mockRes.status).toHaveBeenCalledWith(404);
         expect(mockRes.send).toHaveBeenCalledWith({ message: `Product not found with id ${mockReq.params.id}.` });
     });

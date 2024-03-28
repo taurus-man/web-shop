@@ -13,11 +13,9 @@ jest.mock('bcryptjs', () => ({
     hash: jest.fn().mockResolvedValue('hashedPassword'),
     compare: jest.fn().mockResolvedValue(true),
 }));
-// jest.mock('jsonwebtoken', () => ({
-//     sign: jest.fn().mockReturnValue('fakeToken'),
-// }));
+
 jest.mock('jsonwebtoken', () => ({
-    sign: jest.fn(() => 'fakeToken'), // Directly return 'fakeToken'
+    sign: jest.fn(() => 'fakeToken'),
 }));
 
 
@@ -79,14 +77,7 @@ describe('/signin route', () => {
                 email: savedUser.email
             }
         });
-        // expect(jwt.sign).toHaveBeenCalledWith({ _id: savedUser.id }, expect.any(String), {
-        //     expiresIn: expect.any(String),
-        // });
-        // expect(jwt.sign).toHaveBeenCalledWith(
-        //     { _id: savedUser.id }, 
-        //     'testSecret', // Use the mock JWT_SECRET value
-        //     { expiresIn: '1d' } // Use the mock JWT_EXPIRES_IN value
-        // );
+
         expect(jwt.sign).toHaveBeenCalled();
     });
 
@@ -100,5 +91,4 @@ describe('/signin route', () => {
         expect(response.statusCode).toBe(500);
         expect(response.body).toEqual({ error: "An error occurred during signin" });
     });
-
 });

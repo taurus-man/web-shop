@@ -1,7 +1,7 @@
-const db = require('../../db'); // Adjust the path as necessary
+const db = require('../../db');
 const User = require('../../models/User');
 
-// Mock the db module
+
 jest.mock('../../db', () => ({
     query: jest.fn(),
 }));
@@ -27,13 +27,12 @@ const users = [
 
 describe('User Model', () => {
     beforeEach(() => {
-        // Clear mock calls before each test
         db.query.mockClear();
     });
 
     test('create - adds a new user and returns it', async () => {
         const newUser = users[0];
-        const insertId = 1; // Simulated insert ID
+        const insertId = 1;
         db.query.mockResolvedValue([{ insertId }, undefined]);
 
         const result = await User.create(newUser);
@@ -81,7 +80,7 @@ describe('User Model', () => {
 
     test('remove - deletes a user by ID', async () => {
         const user_id = 1;
-        db.query.mockResolvedValue([{ affectedRows: 1 }, undefined]); // Simulate successful deletion
+        db.query.mockResolvedValue([{ affectedRows: 1 }, undefined]);
 
         await User.remove(user_id);
 
@@ -117,14 +116,14 @@ describe('User Model - Error Handling', () => {
     test('updateById - handles database errors', async () => {
         const user_id = 1;
         const updatedUser = users[0];
-        db.query.mockRejectedValueOnce(new Error('Database error')); // Simulate error during update
+        db.query.mockRejectedValueOnce(new Error('Database error'));
 
         await expect(User.updateById(user_id, updatedUser)).rejects.toThrow('Database error');
     });
 
     test('remove - handles database errors', async () => {
         const user_id = 1;
-        db.query.mockRejectedValue(new Error('Database error')); // Simulate error during deletion
+        db.query.mockRejectedValue(new Error('Database error'));
 
         await expect(User.remove(user_id)).rejects.toThrow('Database error');
     });

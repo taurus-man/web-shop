@@ -49,7 +49,6 @@ describe('Product Routes', () => {
 
     test('GET /:id - Fetch a single product by ID', async () => {
         const mockProduct = products[0];
-        // const mockProduct = { id: 1, name: 'Test Product' };
         productController.getProductById.mockImplementation((req, res) => res.json(mockProduct));
         
         const response = await request(app).get('/1');
@@ -59,7 +58,6 @@ describe('Product Routes', () => {
     });
 
     test('POST / - Create a new product', async () => {
-        // const newProduct = { name: 'New Product', price: 20 };
         const newProduct = products[0];
         productController.createProduct.mockImplementation((req, res) => res.status(201).json(newProduct));
         
@@ -70,7 +68,6 @@ describe('Product Routes', () => {
     });
 
     test('PUT /:id - Update a product', async () => {
-        // const updatedProduct = { id: 1, name: 'Updated Product', price: 30 };
         const updatedProduct = products[0];
         productController.updateProduct.mockImplementation((req, res) => res.json(updatedProduct));
         
@@ -88,8 +85,6 @@ describe('Product Routes', () => {
         expect(response.statusCode).toBe(204);
     });
 });
-
-// Additional error handling tests for Product Routes
 
 describe('Product Routes - Error Handling', () => {
     const app = express();

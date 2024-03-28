@@ -64,9 +64,9 @@ describe('User Routes', () => {
 
     test('GET / - Admin Fetch all users', async () => {
         userController.getAllUsers.mockImplementation((req, res) => res.json(users));
-        
+
         const response = await request(app).get('/');
-        
+
         expect(response.statusCode).toBe(200);
         expect(response.body).toEqual(users);
         expect(userController.getAllUsers).toHaveBeenCalledTimes(1);
@@ -110,10 +110,8 @@ describe('User Routes', () => {
         expect(response.statusCode).toBe(204);
     });
 
-    // Implement further tests for other routes in a similar manner...
 });
 
-// Additional tests for error handling in user routes
 describe('User Routes - Error Handling', () => {
     const app = express();
     app.use(express.json());
@@ -167,66 +165,61 @@ describe('User Routes - Error Handling', () => {
         expect(response.body).toEqual({ message: "Internal server error" });
     });
 
-        // Error handling for creating a user with invalid data
-        test('POST / - Error creating a new user (invalid data)', async () => {
-            const invalidUser = { email: "notanemail", password: "" }; // Intentionally missing name and invalid email format
-            userController.createUser.mockImplementation((req, res) => {
-                res.status(400).json({ message: "Invalid data provided" });
-            });
-    
-            const response = await request(app).post('/').send(invalidUser);
-    
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toEqual({ message: "Invalid data provided" });
+    test('POST / - Error creating a new user (invalid data)', async () => {
+        const invalidUser = { email: "notanemail", password: "" }; // Intentionally missing name and invalid email format
+        userController.createUser.mockImplementation((req, res) => {
+            res.status(400).json({ message: "Invalid data provided" });
         });
-    
-        // Error handling for fetching a non-existent user by ID
-        test('GET /:id - Error fetching a single user by ID (not found)', async () => {
-            userController.getUserById.mockImplementation((req, res) => {
-                res.status(404).json({ message: "User not found" });
-            });
-    
-            const response = await request(app).get('/999'); // Assuming 999 is an ID that does not exist
-    
-            expect(response.statusCode).toBe(404);
-            expect(response.body).toEqual({ message: "User not found" });
+
+        const response = await request(app).post('/').send(invalidUser);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toEqual({ message: "Invalid data provided" });
+    });
+
+    test('GET /:id - Error fetching a single user by ID (not found)', async () => {
+        userController.getUserById.mockImplementation((req, res) => {
+            res.status(404).json({ message: "User not found" });
         });
-    
-        // Error handling for updating a non-existent user
-        test('PUT /:id - Error updating a user (not found)', async () => {
-            const updatedUser = { name: "DoesNotExist" };
-            userController.updateUser.mockImplementation((req, res) => {
-                res.status(404).json({ message: "User not found" });
-            });
-    
-            const response = await request(app).put('/999').send(updatedUser); // Assuming 999 is an ID that does not exist
-    
-            expect(response.statusCode).toBe(404);
-            expect(response.body).toEqual({ message: "User not found" });
+
+        const response = await request(app).get('/999'); // Assuming 999 is an ID that does not exist
+
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ message: "User not found" });
+    });
+
+    test('PUT /:id - Error updating a user (not found)', async () => {
+        const updatedUser = { name: "DoesNotExist" };
+        userController.updateUser.mockImplementation((req, res) => {
+            res.status(404).json({ message: "User not found" });
         });
-    
-        // Error handling for deleting a non-existent user
-        test('DELETE /:id - Error deleting a user (not found)', async () => {
-            userController.deleteUser.mockImplementation((req, res) => {
-                res.status(404).json({ message: "User not found" });
-            });
-    
-            const response = await request(app).delete('/999'); // Assuming 999 is an ID that does not exist
-    
-            expect(response.statusCode).toBe(404);
-            expect(response.body).toEqual({ message: "User not found" });
+
+        const response = await request(app).put('/999').send(updatedUser); // Assuming 999 is an ID that does not exist
+
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ message: "User not found" });
+    });
+
+    test('DELETE /:id - Error deleting a user (not found)', async () => {
+        userController.deleteUser.mockImplementation((req, res) => {
+            res.status(404).json({ message: "User not found" });
         });
-    
-        // Error handling for updating a user with invalid data
-        test('PUT /:id - Error updating a user (invalid data)', async () => {
-            const invalidData = { email: "notanemail" }; // Invalid email format
-            userController.updateUser.mockImplementation((req, res) => {
-                res.status(400).json({ message: "Invalid data provided" });
-            });
-    
-            const response = await request(app).put(`/1`).send(invalidData);
-    
-            expect(response.statusCode).toBe(400);
-            expect(response.body).toEqual({ message: "Invalid data provided" });
+
+        const response = await request(app).delete('/999'); // Assuming 999 is an ID that does not exist
+
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ message: "User not found" });
+    });
+
+    test('PUT /:id - Error updating a user (invalid data)', async () => {
+        const invalidData = { email: "notanemail" }; // Invalid email format
+        userController.updateUser.mockImplementation((req, res) => {
+            res.status(400).json({ message: "Invalid data provided" });
         });
+
+        const response = await request(app).put(`/1`).send(invalidData);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body).toEqual({ message: "Invalid data provided" });
+    });
 });

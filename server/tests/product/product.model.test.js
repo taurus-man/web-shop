@@ -1,7 +1,6 @@
 const db = require('../../db');
 const Product = require('../../models/Product');
 
-// Mock the db module
 jest.mock('../../db', () => ({
     query: jest.fn(),
 }));
@@ -27,14 +26,12 @@ const products = [
 
 describe('Product Model', () => {
     beforeEach(() => {
-        // Clear mock calls before each test
         db.query.mockClear();
     });
 
     test('create - adds a new product and returns it', async () => {
         const newProduct = products[0];
-        // const newProduct = { name: 'Test Product', price: 100, description: 'A test product', image_url: 'http://example.com/product.jpg' };
-        const insertId = 1; // Simulated insert ID
+        const insertId = 1;
         db.query.mockResolvedValue([{ insertId }, undefined]);
 
         const result = await Product.create(newProduct);
@@ -45,7 +42,6 @@ describe('Product Model', () => {
 
     test('findById - finds a product by ID', async () => {
         const product_id = 1;
-        // const product = { id: product_id, name: 'Test Product' };
         const product = products[0];
         db.query.mockResolvedValue([[product], undefined]);
 
@@ -57,7 +53,6 @@ describe('Product Model', () => {
 
     test('findAll - returns all products', async () => {
         const productsMock = products;
-        // const products = [{ id: 1, name: 'Test Product 1' }, { id: 2, name: 'Test Product 2' }];
         db.query.mockResolvedValue([productsMock, undefined]);
 
         const result = await Product.findAll();
@@ -68,12 +63,6 @@ describe('Product Model', () => {
 
     test('updates a product and returns the updated product', async () => {
         const product_id = 1;
-        // const updatedProduct = {
-        //     name: 'Updated Product',
-        //     description: 'An updated product',
-        //     price: 150,
-        //     image_url: 'http://example.com/updated_product.jpg'
-        // };
         const updatedProduct = products[1];
 
         db.query.mockResolvedValueOnce([{ affectedRows: 1 }, undefined]);
@@ -91,7 +80,7 @@ describe('Product Model', () => {
 
     test('remove - deletes a product by ID', async () => {
         const product_id = 1;
-        db.query.mockResolvedValue([{ affectedRows: 1 }, undefined]); // Simulate successful deletion
+        db.query.mockResolvedValue([{ affectedRows: 1 }, undefined]);
 
         await Product.remove(product_id);
 
@@ -105,7 +94,6 @@ describe('Product Model - Error Handling', () => {
     });
 
     test('create - handles database errors', async () => {
-        // const newProduct = { name: 'Test Product', price: 100, description: 'A test product', image_url: 'http://example.com/product.jpg' };
         const newProduct = products[0];
         db.query.mockRejectedValue(new Error('Database error'));
 
@@ -128,15 +116,14 @@ describe('Product Model - Error Handling', () => {
     test('updateById - handles database errors', async () => {
         const product_id = 1;
         const updatedProduct = products[0];
-        // const updatedProduct = { name: 'Updated Product', price: 150, description: 'An updated product', image_url: 'http://example.com/updated_product.jpg' };
-        db.query.mockRejectedValueOnce(new Error('Database error')); // Simulate error during update
+        db.query.mockRejectedValueOnce(new Error('Database error'));
 
         await expect(Product.updateById(product_id, updatedProduct)).rejects.toThrow('Database error');
     });
 
     test('remove - handles database errors', async () => {
         const product_id = 1;
-        db.query.mockRejectedValue(new Error('Database error')); // Simulate error during deletion
+        db.query.mockRejectedValue(new Error('Database error'));
 
         await expect(Product.remove(product_id)).rejects.toThrow('Database error');
     });

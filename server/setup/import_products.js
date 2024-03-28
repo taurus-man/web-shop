@@ -60,8 +60,7 @@ connection.connect(function (err) {
             description: "fact that a reader will be distracted by the readable content of a page when ",
             price: "67.99",
             image_url: "https://picsum.photos/seed/random108/300/700"
-        },
-        // Add more products as needed
+        }
     ];
 
     function insertProducts() {

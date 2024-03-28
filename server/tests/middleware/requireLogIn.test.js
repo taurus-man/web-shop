@@ -1,14 +1,12 @@
-// requireLogin.test.js
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
-const requireLogin = require('../../middleware/requireLogin'); // Adjust the path as needed
+const requireLogin = require('../../middleware/requireLogin');
 
 // Mocking jwt and User model
 jest.mock('jsonwebtoken');
 jest.mock('../../models/User');
 
 describe('requireLogin Middleware', () => {
-    // Helper function to create mock request and response objects
     const getMocks = () => {
         const req = { headers: {} };
         const res = {

@@ -1,7 +1,6 @@
 const { getAllUsers, getUserById, createUser, updateUser, deleteUser, getProfile, updateProfile, deleteProfile } = require('../../controllers/userController');
 const User = require('../../models/User');
 
-// Mock the User model
 jest.mock('../../models/User');
 
 const users = [
@@ -106,7 +105,7 @@ describe('User Controller', () => {
         const user_id = 1;
         const updatedUser = { ...users[0], name: 'Updated User' };
 
-        User.updateById.mockResolvedValue(updatedUser); // Assuming true indicates success
+        User.updateById.mockResolvedValue(updatedUser);
         User.findById.mockResolvedValue(updatedUser);
 
         mockReq.params = { id: user_id };
@@ -162,9 +161,8 @@ describe('User Profile Controller', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        // mockReq = {};
         mockReq = {
-            user: { id: 1 } // Simulate an authenticated user with ID 1
+            user: { id: 1 }
         };
         mockRes = {
             json: jest.fn().mockReturnThis(),
@@ -172,29 +170,6 @@ describe('User Profile Controller', () => {
             status: jest.fn().mockReturnThis()
         };
     });
-
-    // beforeEach(() => {
-    //     jest.clearAllMocks();
-
-    //     // Mocking req.user for profile operations
-    //     mockReq.user = { id: 1 }; // Assuming user with ID 1 is the authenticated user
-
-    //     mockReq.body = {}; // Reset body for each test
-    // });
-
-    // test('getProfile successfully retrieves the user profile', async () => {
-    //     // const userProfile = users[0]; // Assuming the first user is the authenticated user
-    //     // User.findById.mockResolvedValue(userProfile);
-    //     const user_id = 1;
-    //     const mockUser = users.find(user => user.id === user_id);
-    //     User.findById.mockResolvedValue(mockUser);
-
-    //     mockReq.params = { id: user_id };
-    //     await getProfile(mockReq, mockRes);
-
-    //     expect(mockRes.json).toHaveBeenCalledWith(mockUser);
-
-    // });
 
     test('getProfile successfully retrieves the user profile', async () => {
         const mockUser = users.find(user => user.id === mockReq.user.id);
@@ -238,7 +213,6 @@ describe('User Profile Controller', () => {
         const updatedName = "Updated Name";
         mockReq.body = { name: updatedName };
 
-        // Assuming updateName method returns the updated user object
         User.updateName.mockResolvedValue({ ...users[0], name: updatedName });
 
         await updateProfile(mockReq, mockRes);
@@ -250,7 +224,7 @@ describe('User Profile Controller', () => {
         const user_id = 1;
         const updatedUser = { ...users[0], name: 'Updated User' };
 
-        User.updateById.mockResolvedValue(updatedUser); // Assuming true indicates success
+        User.updateById.mockResolvedValue(updatedUser);
         User.findById.mockResolvedValue(updatedUser);
 
         mockReq.params = { id: user_id };
