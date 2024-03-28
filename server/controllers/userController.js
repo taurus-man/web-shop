@@ -30,10 +30,10 @@ exports.getProfile = async (req, res) => {
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
-        res.json(user);
+        else res.json(user);
     } catch (err) {
         res.status(500).send({
-            message: err.message || "Error retrieving user profile."
+            message: "Error retrieving user profile."
         });
     }
 };
@@ -53,6 +53,26 @@ exports.createUser = async (req, res) => {
     }
 };
 
+// exports.updateUser = async (req, res) => {
+//     if (!req.body.name || !req.body.email) {
+//         return res.status(400).send({ message: 'Name and email are required' });
+//     }
+
+//     if (!isValidEmail(req.body.email)) {
+//         return res.status(400).send({ message: 'Invalid email format' });
+//     }
+
+//     try {
+//         const user = await User.updateById(req.params.id, req.body);
+//         if (!user) {
+//             res.status(404).send({ message: "User not found" });
+//         } else {
+//             res.json(user);
+//         }
+//     } catch (error) {
+//         res.status(500).send({ message: error.message || 'An error occurred while updating the user.' });
+//     }
+// };
 exports.updateUser = async (req, res) => {
     if (!req.body.name || !req.body.email) {
         return res.status(400).send({ message: 'Name and email are required' });
@@ -63,14 +83,16 @@ exports.updateUser = async (req, res) => {
     }
 
     try {
-        const user = await User.updateById(req.params.id, req.body);
-        if (!user) {
-            res.status(404).send({ message: "User not found" });
-        } else {
-            res.json(user);
-        }
+        await User.updateById(req.params.id, req.body);
+        const updatedUser = await User.findById(req.params.id);
+        res.json(updatedUser);
     } catch (error) {
-        res.status(500).send({ message: error.message || 'An error occurred while updating the user.' });
+        if (error.kind === 'not_found') {
+            res.status(404).send({ message: `User not found with id ${req.params.id}.` });
+        } else {
+            res.status(500).send({ message: error.message || 'An error occurred while updating the user.' });
+        }
+        // res.status(500).send({ message: error.message || 'An error occurred while updating the user.' });
     }
 };
 
@@ -81,10 +103,17 @@ exports.updateProfile = async (req, res) => {
     }
 
     try {
+        await User.updateName(req.user.id, name);
         const updatedUser = await User.updateName(req.user.id, name);
+        // const updatedUser = await User.findById(req.params.id);
         res.json(updatedUser);
     } catch (error) {
-        res.status(500).send({ message: error.message || 'An error occurred while updating the profile.' });
+        if (error.kind === 'not_found') {
+            res.status(404).send({ message: `User not found with id ${req.params.id}.` });
+        } else {
+            res.status(500).send({ message: 'An error occurred while updating the profile.' });
+        }
+        // res.status(500).send({ message: error.message || 'An error occurred while updating the profile.' });
     }
 };
 

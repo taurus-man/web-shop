@@ -6,8 +6,8 @@ class Product {
         return { id: res.insertId, ...newProduct };
     }
 
-    static async findById(productId) {
-        const [rows] = await db.query("SELECT * FROM products WHERE id = ?", [productId]);
+    static async findById(product_id) {
+        const [rows] = await db.query("SELECT * FROM products WHERE id = ?", [product_id]);
         return rows.length ? rows[0] : null;
     }
 
